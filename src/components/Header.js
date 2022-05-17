@@ -39,7 +39,7 @@ const Header = ({ onAddTodo, checkAll, isLoading }) => {
 
     return (
         <form onSubmit={handleSubmit} className="todo-form">
-            {isLoading === false ?
+            {!isLoading ?
                 <Fragment>
                     <code className={theme}>todos</code>
                     <div className="input-wrapper">
