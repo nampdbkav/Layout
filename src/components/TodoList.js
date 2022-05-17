@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react'
+import axios from "axios";
+import { toast } from 'react-toastify';
+import { connect } from 'react-redux';
+
 
 //Components
 import Header from './Header';
 import Todo from './Todo';
 import Footer from './Footer';
 import { ThemeContext } from './ThemeContext'
-import { connect } from 'react-redux';
 import * as actions from '../actions/actions'
 import Scroll from './Scroll';
-import axios from "axios";
-import { toast } from 'react-toastify';
+import apiCaller from '../utils/apiCaller';
 
 
 
@@ -27,7 +29,7 @@ const filterItem = (items, filter) => {
     }
 }
 
-const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeComplete, fetchAllTodo, onGetTodo }) => {
+const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeComplete, fetchTodo, onGetTodo }) => {
 
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState([])
@@ -35,10 +37,25 @@ const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeCompl
 
     useEffect(() => {
         setTimeout(() => {
-            fetchAllTodo()
+            apiCaller(`todos`, 'GET', null).then(res => {
+                fetchTodo(res.data)
+            })
             setIsLoading(false)
         }, 1500)
     }, [])
+
+    const onDel = (id) => {
+        apiCaller(`todos/${id}`, 'DELETE', null).then(res => {
+            onDeleteTodo(id)
+        })
+    }
+
+    const onGet = (id) => {
+        apiCaller(`todos/${id}`, 'GET', null)
+            .then(res => {
+                onGetTodo(res.data)
+            })
+    }
 
     useEffect(() => {
         const types = {
@@ -68,8 +85,8 @@ const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeCompl
                         <Todo
                             key={todo.id}
                             onClick={() => toggle(todo.id)}
-                            onGet={() => onGetTodo(todo.id)}
-                            onDel={() => { onDeleteTodo(todo.id); toast.success('Delete success!') }}
+                            onGet={onGet}
+                            onDel={onDel}
                             index={index}
                             todo={todo}
                             isLoading={isLoading}
@@ -97,14 +114,14 @@ const mapStateToProps = (state) => {
 
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchAllTodo: () => {
-        dispatch(actions.actFetchTodoRequest())
+    fetchTodo: (todos) => {
+        dispatch(actions.actFetchTodo(todos))
     },
     onDeleteTodo: (id) => {
-        dispatch(actions.actDelTodoRequest(id))
+        dispatch(actions.actDelTodo(id))
     },
     onGetTodo: (id) => {
-        dispatch(actions.actGetTodoRequest(id))
+        dispatch(actions.actGetTodo(id))
     }
 })
 

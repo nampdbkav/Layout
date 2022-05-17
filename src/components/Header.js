@@ -2,8 +2,10 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { useContext } from 'react'
 import { ThemeContext } from './ThemeContext'
 import { toast } from 'react-toastify';
-import { actAddTodoRequest } from '../actions/actions';
+import { actAddTodo } from '../actions/actions';
 import { connect } from 'react-redux';
+
+import apiCaller from '../utils/apiCaller';
 
 
 const Header = ({ onAddTodo, checkAll, isLoading }) => {
@@ -20,7 +22,11 @@ const Header = ({ onAddTodo, checkAll, isLoading }) => {
         if (!text) {
             toast.error('Missing input!')
         }
-        onAddTodo(todo)
+        apiCaller(`todos`, 'POST', todo)
+            .then(res => {
+                onAddTodo(res.data)
+            })
+        // onAddTodo(todo)
         setText('')
     }
 
@@ -72,7 +78,7 @@ const Header = ({ onAddTodo, checkAll, isLoading }) => {
 
 const mapDispatchToProps = (dispatch) => ({
     onAddTodo: (todo) => {
-        dispatch(actAddTodoRequest(todo))
+        dispatch(actAddTodo(todo))
     }
 })
 

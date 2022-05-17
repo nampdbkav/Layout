@@ -1,7 +1,9 @@
 import React, { Fragment, useState } from 'react';
-import { actComplteTodoRequest, actEditTodoRequest } from '../actions/actions';
+import { actEditTodo } from '../actions/actions';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
+
+import apiCaller from '../utils/apiCaller';
 
 const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTodo, onGet, isLoading }) => {
 
@@ -11,7 +13,10 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
     const handleEnter = (event) => {
         const todo = { id, text }
         if (event.key === 'Enter') {
-            onUpdateTodo(todo)
+            apiCaller(`todos/${todo.id}`, 'PUT', todo)
+                .then(res => {
+                    onUpdateTodo(res.data)
+                })
             setOpen(!open)
             toast.success('Edit success!')
         }
@@ -19,19 +24,18 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
 
     const handleEdit = () => {
         setOpen(true)
-        onGet()
+        onGet(todo.id)
     }
 
-    const handleMouseOver = () => {
-        setOpen(false)
+    const handleDelete = () => {
+        onDel(todo.id)
+        toast.success('Delete success!')
     }
 
     return (
         <Fragment>
             {isLoading === false &&
-                <li
-                    onMouseOver={handleMouseOver}
-                >
+                <li>
                     <div className='first'
                         style={{ textDecoration: complete ? 'line-through' : '' }}
 
@@ -57,7 +61,7 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
                         </div>
                     </div>
                     <button onClick={handleEdit}>Edit</button>
-                    <button onClick={onDel}>Delete</button>
+                    <button onClick={handleDelete}>Delete</button>
 
                 </li >
             }
@@ -69,11 +73,8 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
 
 const mapDispatchToProps = (dispatch) => ({
     onUpdateTodo: (todo) => {
-        dispatch(actEditTodoRequest(todo))
+        dispatch(actEditTodo(todo))
     },
-    onCompleteTodo: (todo) => {
-        dispatch(actComplteTodoRequest(todo))
-    }
 })
 
 export default connect(null, mapDispatchToProps)(Todo)
