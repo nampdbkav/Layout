@@ -9,23 +9,8 @@ import { ThemeContext } from './ThemeContext'
 import { connect } from 'react-redux';
 import * as actions from '../actions/actions'
 import Scroll from './Scroll';
-import axios from "axios";
 import { toast } from 'react-toastify';
 
-
-
-const filterItem = (items, filter) => {
-    switch (filter) {
-        case actions.setShow.SHOW_ALL:
-            return items
-        case actions.setShow.SHOW_ACTIVE:
-            return items.filter(t => !t.complete)
-        case actions.setShow.SHOW_COMPLETED:
-            return items.filter(t => t.complete)
-        default:
-            return items
-    }
-}
 
 const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeComplete, fetchAllTodo, onGetTodo }) => {
 

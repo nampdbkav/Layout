@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { actComplteTodoRequest, actEditTodoRequest } from '../actions/actions';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -27,41 +27,37 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
     }
 
     return (
-        <Fragment>
-            {isLoading === false &&
-                <li
-                    onMouseOver={handleMouseOver}
-                >
-                    <div className='first'
-                        style={{ textDecoration: complete ? 'line-through' : '' }}
+        <li
+            onMouseOver={handleMouseOver}
+        >
+            <div className='first'
+                style={{ textDecoration: complete ? 'line-through' : '' }}
 
-                    >
-                        <input type='checkbox'
-                            checked={complete}
-                            onClick={onClick}
-                            onChange={() => { }}
+            >
+                <input type='checkbox'
+                    checked={complete}
+                    onClick={onClick}
+                    onChange={() => { }}
+                />
+                <div className='double'>
+                    {open ? (
+                        <input className='input-edit'
+                            defaultValue={todo.text}
+                            onKeyDown={handleEnter}
+                            type='text'
+                            autoFocus
+                            onChange={(e) => {
+                                console.log('edit');
+                                setText(e.target.value);
+                            }}
                         />
-                        <div className='double'>
-                            {open ? (
-                                <input className='input-edit'
-                                    defaultValue={todo.text}
-                                    onKeyDown={handleEnter}
-                                    type='text'
-                                    autoFocus
-                                    onChange={(e) => {
-                                        console.log('edit');
-                                        setText(e.target.value);
-                                    }}
-                                />
-                            ) : ((index + 1) + ' : ' + todo.text)}
-                        </div>
-                    </div>
-                    <button onClick={handleEdit}>Edit</button>
-                    <button onClick={onDel}>Delete</button>
+                    ) : ((index + 1) + ' : ' + todo.text)}
+                </div>
+            </div>
+            <button onClick={handleEdit}>Edit</button>
+            <button onClick={onDel}>Delete</button>
 
-                </li >
-            }
-        </Fragment>
+        </li >
 
     )
 
