@@ -1,10 +1,10 @@
 
 import React, { Fragment, useContext } from "react";
 import { setShow } from "../actions/actions";
-// import Link from "./Link";
+import Link from "./Link";
 import { ThemeContext } from './ThemeContext'
 
-const Footer = ({ countActive, removeComplete, removeCompleted, isLoading, isErr }) => {
+const Footer = ({ countActive, isLoading, removeComplete, removeCompleted }) => {
     const theme = useContext(ThemeContext)
     return (
         <Fragment>
@@ -14,7 +14,7 @@ const Footer = ({ countActive, removeComplete, removeCompleted, isLoading, isErr
                         {countActive}
                         <span>: items left</span>
                     </div>
-                    {/* <div >
+                    <div >
                         <Link filter={setShow.SHOW_ALL}>All</Link>
                         <Link filter={setShow.SHOW_ACTIVE}>Active</Link>
                         <Link filter={setShow.SHOW_COMPLETED}>Complete</Link>
@@ -23,7 +23,7 @@ const Footer = ({ countActive, removeComplete, removeCompleted, isLoading, isErr
                                 ClearComplete
                             </button>
                         ) : null}
-                    </div> */}
+                    </div>
                 </div>
             }
         </Fragment>

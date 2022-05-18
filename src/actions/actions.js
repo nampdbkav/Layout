@@ -1,4 +1,4 @@
-import apiCaller from "../utils/apiCaller"
+
 
 export const actFetchTodo = (todos) => {
     return {
@@ -10,13 +10,6 @@ export const actFetchTodo = (todos) => {
 export const actAddTodo = (todo) => {
     return {
         type: 'ADD_TODO',
-        todo
-    }
-}
-
-export const actGetTodo = (todo) => {
-    return {
-        type: 'GET_TODO',
         todo
     }
 }

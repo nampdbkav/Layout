@@ -2,13 +2,10 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { useContext } from 'react'
 import { ThemeContext } from './ThemeContext'
 import { toast } from 'react-toastify';
-import { actAddTodo } from '../actions/actions';
-import { connect } from 'react-redux';
-
-import apiCaller from '../utils/apiCaller';
 
 
-const Header = ({ onAddTodo, checkAll, isLoading }) => {
+
+const Header = ({ onAdd, checkAll, isLoading }) => {
 
     const [text, setText] = useState('')
 
@@ -21,13 +18,10 @@ const Header = ({ onAddTodo, checkAll, isLoading }) => {
         const todo = { text }
         if (!text) {
             toast.error('Missing input!')
+        } else {
+            onAdd(todo)
+            setText('')
         }
-        apiCaller(`todos`, 'POST', todo)
-            .then(res => {
-                onAddTodo(res.data)
-            })
-        // onAddTodo(todo)
-        setText('')
     }
 
     const theme = useContext(ThemeContext)
@@ -76,11 +70,5 @@ const Header = ({ onAddTodo, checkAll, isLoading }) => {
 
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    onAddTodo: (todo) => {
-        dispatch(actAddTodo(todo))
-    }
-})
-
 // export default Header
-export default connect(null, mapDispatchToProps)(Header)
+export default Header

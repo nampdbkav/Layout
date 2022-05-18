@@ -3,7 +3,7 @@ import React, { Fragment } from 'react';
 //Component
 import TodoList from './components/TodoList';
 import { ThemeProvider } from './components/ThemeContext'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 

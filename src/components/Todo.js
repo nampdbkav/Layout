@@ -1,11 +1,8 @@
 import React, { Fragment, useState } from 'react';
-import { actEditTodo } from '../actions/actions';
-import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 
-import apiCaller from '../utils/apiCaller';
 
-const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTodo, onGet, isLoading }) => {
+const Todo = ({ todo: { complete, id }, todo, index, isLoading, onDel, onEdit/*, onClick */ }) => {
 
     const [open, setOpen] = useState(false)
     const [text, setText] = useState('');
@@ -13,10 +10,7 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
     const handleEnter = (event) => {
         const todo = { id, text }
         if (event.key === 'Enter') {
-            apiCaller(`todos/${todo.id}`, 'PUT', todo)
-                .then(res => {
-                    onUpdateTodo(res.data)
-                })
+            onEdit(todo)
             setOpen(!open)
             toast.success('Edit success!')
         }
@@ -24,7 +18,6 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
 
     const handleEdit = () => {
         setOpen(true)
-        onGet(todo.id)
     }
 
     const handleDelete = () => {
@@ -34,7 +27,7 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
 
     return (
         <Fragment>
-            {isLoading === false &&
+            {!isLoading &&
                 <li>
                     <div className='first'
                         style={{ textDecoration: complete ? 'line-through' : '' }}
@@ -42,7 +35,7 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
                     >
                         <input type='checkbox'
                             checked={complete}
-                            onClick={onClick}
+                            // onClick={onClick}
                             onChange={() => { }}
                         />
                         <div className='double'>
@@ -71,10 +64,5 @@ const Todo = ({ todo: { complete, id }, todo, onClick, onDel, index, onUpdateTod
 
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    onUpdateTodo: (todo) => {
-        dispatch(actEditTodo(todo))
-    },
-})
 
-export default connect(null, mapDispatchToProps)(Todo)
+export default Todo

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react'
-import axios from "axios";
-import { toast } from 'react-toastify';
 import { connect } from 'react-redux';
 
 
@@ -29,7 +27,7 @@ const filterItem = (items, filter) => {
     }
 }
 
-const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeComplete, fetchTodo, onGetTodo }) => {
+const TodoList = ({ page, todo, fetchTodo, onAddTodo, onEditTodo, onDeleteTodo, removeComplete/* toggleAllTodo, toggle */ }) => {
 
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState([])
@@ -44,19 +42,6 @@ const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeCompl
         }, 1500)
     }, [])
 
-    const onDel = (id) => {
-        apiCaller(`todos/${id}`, 'DELETE', null).then(res => {
-            onDeleteTodo(id)
-        })
-    }
-
-    const onGet = (id) => {
-        apiCaller(`todos/${id}`, 'GET', null)
-            .then(res => {
-                onGetTodo(res.data)
-            })
-    }
-
     useEffect(() => {
         const types = {
             id: 'id'
@@ -65,6 +50,24 @@ const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeCompl
         console.log('...', sorted);
         setData(sorted)
     }, [todo])
+
+    const onAdd = (todo) => {
+        apiCaller(`todos`, 'POST', todo).then(res => {
+            onAddTodo(res.data)
+        })
+    }
+
+    const onEdit = (todo) => {
+        apiCaller(`todos/${todo.id}`, 'PUT', todo).then(res => {
+            onEditTodo(res.data)
+        })
+    }
+
+    const onDel = (id) => {
+        apiCaller(`todos/${id}`, 'DELETE', null).then(res => {
+            onDeleteTodo(id)
+        })
+    }
 
     const theme = useContext(ThemeContext)
 
@@ -75,7 +78,8 @@ const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeCompl
     return (
         <div className={theme}>
             <Header
-                checkAll={toggleAllTodo}
+                onAdd={onAdd}
+                // checkAll={toggleAllTodo}
                 isLoading={isLoading}
             />
 
@@ -84,9 +88,9 @@ const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeCompl
                     {data.slice(0, page * 3).map((todo, index) => (
                         <Todo
                             key={todo.id}
-                            onClick={() => toggle(todo.id)}
-                            onGet={onGet}
+                            // onClick={() => toggle(todo.id)}
                             onDel={onDel}
+                            onEdit={onEdit}
                             index={index}
                             todo={todo}
                             isLoading={isLoading}
@@ -108,7 +112,7 @@ const TodoList = ({ page, todo, toggle, onDeleteTodo, toggleAllTodo, removeCompl
 
 const mapStateToProps = (state) => {
     return {
-        todo: state.todo,
+        todo: filterItem(state.todo, state.todoEditing)
     }
 }
 
@@ -117,12 +121,16 @@ const mapDispatchToProps = (dispatch) => ({
     fetchTodo: (todos) => {
         dispatch(actions.actFetchTodo(todos))
     },
+    onAddTodo: (todo) => {
+        dispatch(actions.actAddTodo(todo))
+    },
+    onEditTodo: (todo) => {
+        dispatch(actions.actEditTodo(todo))
+    },
     onDeleteTodo: (id) => {
         dispatch(actions.actDelTodo(id))
-    },
-    onGetTodo: (id) => {
-        dispatch(actions.actGetTodo(id))
     }
+
 })
 
 
